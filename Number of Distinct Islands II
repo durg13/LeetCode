@@ -1,0 +1,120 @@
+Number of Distinct Islands II
+
+You are given an m x n binary matrix grid. An island is a group of 1's (representing land) connected 4-directionally (horizontal or vertical.) 
+You may assume all four edges of the grid are surrounded by water.
+An island is considered to be the same as another if they have the same shape, or have the same shape after rotation (90, 180, or 270 degrees only) 
+or reflection (left/right direction or up/down direction).
+Return the number of distinct islands.
+
+Example 1:
+Input: grid = [[1,1,0,0,0],[1,0,0,0,0],[0,0,0,0,1],[0,0,0,1,1]]
+Output: 1
+Explanation: The two islands are considered the same because if we make a 180 degrees clockwise rotation on the first island, then two islands will have the same shapes.
+
+Example 2:
+Input: grid = [[1,1,0,0,0],[1,1,0,0,0],[0,0,0,1,1],[0,0,0,1,1]]
+Output: 1
+ 
+Constraints
+m == grid.length
+n == grid[i].length
+1 <= m, n <= 50
+grid[i][j] is either 0 or 1.
+
+-----------------------------------------
+
+class Solution {
+    public int numDistinctIslands2(int[][] grid) {
+        Set<String> hashSet = new HashSet<>();
+        int res = 0;
+        for(int i =0; i < grid.length ; i++){
+            for(int j =0; j < grid[0].length ; j++){
+                if(grid[i][j] != 0){
+                    StringBuffer s = new StringBuffer();
+                    dfs(i, j, grid, s);
+                    if(!hashSet.contains(s.toString())){
+                        res++;
+                        hashSet.add(s.toString());
+                        hashSet.addAll(addRotations(s.toString().toCharArray()));
+                    }
+                }
+            }
+        }
+        return res;
+    }
+        
+    void dfs(int i , int j, int[][] grid, StringBuffer sb){
+        int[] dirx = {1,-1,0,0};
+        int[] diry = {0,0,1,-1};
+        char[] dir = {'D', 'U', 'R', 'L'};
+        grid[i][j] = 0;
+        for(int k = 0; k <= 3; k++){
+            int row = i+dirx[k];
+            int col = j+diry[k];
+            if(row >= 0 && row < grid.length && col >= 0 && col < grid[0].length && grid[row][col] == 1){
+                dfs(row, col, grid, sb.append(dir[k]));
+                sb.append("b");
+            }
+        }
+    }
+    
+    List<String> addRotations(char[] s){
+        List<String> list = new ArrayList<>();
+        // Rotation when y axis == x axis
+        char[] rot = new char[s.length];
+        int start = 0, last = s.length-1;
+        while(start < last){
+            rot[start] = s[last];
+            rot[last] = s[start];
+            start++;
+            last--;
+        }
+        list.add(new String(rot));
+        
+        
+        // Horizaontal and vertical reflection
+        char[] tempH = s.clone();
+        char[] tempV = s.clone();
+        for(int i = 0; i < s.length ; i++ ){
+            if(s[i] == 'L'){
+                tempH[i] = 'R';
+            }
+            else if(s[i] == 'R'){
+                tempH[i] = 'L';
+            }
+            else if(s[i] == 'U'){
+                tempV[i] = 'D';
+            }
+            else if(s[i] == 'D'){
+                tempV[i] = 'U';
+            }
+        }
+        
+        list.add(new String(tempH));
+        list.add(new String(tempV));
+        
+        // Rotaion 90, 180, 270
+        HashMap<Character, Character> map = new HashMap<>();
+        map.put('L', 'U');
+        map.put('R','D');
+        map.put('U', 'R');
+        map.put('D','L');
+        for(int i = 0; i < 3; i++){
+        char[] temp = new char[s.length];
+        int j = 0;
+        for(char c : s){
+            if(c != 'b')
+                temp[j++] = map.get(c);
+            else{
+                temp[j++] = c;
+            }
+        }
+            list.add(new String(temp));
+            s = temp;
+        }
+        
+        
+        return list;
+    }
+}
+
