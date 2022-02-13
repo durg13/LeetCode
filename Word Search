@@ -60,4 +60,8 @@ class Solution {
         board[i][j] = word.charAt(index);
         return res;
     }
+    
+    // For folloow up pruning.
+    // Check the board size(m*n) is greater than the word size
+    // Check the word char count is all present in the matrix
 }
