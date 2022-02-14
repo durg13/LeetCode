@@ -1,0 +1,63 @@
+Count Univalue Subtrees
+Given the root of a binary tree, return the number of uni-value subtrees.
+A uni-value subtree means all nodes of the subtree have the same value.
+
+Example 1:
+Input: root = [5,1,5,5,5,null,5]
+Output: 4
+
+Example 2:
+Input: root = []
+Output: 0
+
+Example 3:
+Input: root = [5,5,5,5,5,null,5]
+Output: 6
+ 
+Constraints:
+The number of the node in the tree will be in the range [0, 1000].
+-1000 <= Node.val <= 1000
+
+-----------------------------------------------------------------------------------------------------
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    int count = 0;
+    public int countUnivalSubtrees(TreeNode root) {
+        if(root == null) return 0;
+        dfs(root);
+        return count;
+    }   
+    
+   boolean dfs(TreeNode root ){
+        if(root == null) return true;
+        boolean isUniValue = true;
+        if(root.left == null && root.right == null){
+            count++;
+            return true;
+        }
+       if(root.left != null)
+            isUniValue = dfs(root.left) && root.left.val == root.val && isUniValue;
+       if(root.right != null) 
+            isUniValue= dfs(root.right) && root.right.val == root.val && isUniValue;
+
+        if(isUniValue) {
+            count++;
+        }
+        return isUniValue;
+    }
+}
