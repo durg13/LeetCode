@@ -1,0 +1,49 @@
+Meeting Rooms II
+
+Given an array of meeting time intervals intervals where intervals[i] = [starti, endi], return the minimum number of conference rooms required.
+
+ 
+
+Example 1:
+
+Input: intervals = [[0,30],[5,10],[15,20]]
+Output: 2
+Example 2:
+
+Input: intervals = [[7,10],[2,4]]
+Output: 1
+ 
+
+Constraints:
+
+1 <= intervals.length <= 104
+0 <= starti < endi <= 106
+
+-------------------------------------------------------------------
+class Solution {
+    public int minMeetingRooms(int[][] intervals) {
+        int[] start = new int[intervals.length];
+        int[] end = new int[intervals.length];
+        int i = 0;
+        for(int[] interval : intervals){
+            start[i] = interval[0];
+            end[i] = interval[1];
+            i++;
+        }
+        Arrays.sort(start);
+        Arrays.sort(end);
+        int res = 0;
+        int s = 0, e = 0;
+        while(s < start.length){
+            // check whether a room is getting free or not
+            if(start[s] >= end[e]){
+                res--;
+                e++;
+            }
+            // Do this irrespective of room is getting freed or not.
+            res++;
+            s++;
+        }
+        return res;
+    }
+}
